@@ -1,0 +1,87 @@
+Document de spécification formelle pour Gestion de Stock
+
+2. Description des types et des différentes constantes.
+
+Le nombre de livre maxi-mal qu’un membre peut emprunter est noté
+nbpretmax
+
+. Il y a les types
+Cote, Livre et Lecteur
+
+. Le type Cote représente l’ensemble des cotes possibles (utilisées ou non).
+
+Le type Livre représente l’ensemble des livres possibles (peu importe que la biblio-thèque les possède ou non). On peut penser que chaque élément de type Livre contient des informations utiles comme l’auteur, le titre, l’année de publication, etc.
+
+Le type Lecteur représente l’ensemble des lecteurs possibles  (membres ou non). On peut penser que chaque élément de type Lecteur contient des informations utiles comme le nom, l’adresse,  le numéro de téléphone, etc.
+
+On a finalement le type Message qui contient les messages possiblement retournés à l’utilisateur par le système en cas l’erreur. 
+
+Voici la spécification de ces types et constantes.
+[COTE, LIVRE , LECTEUR ]
+nbpret
+max:N
+nbpretmax>0
+MESSAGE::=LivreNonDisponible
+|NonMembre
+|NbPretMaxAtteint
+|LivrePasEnStock
+|LivreDejaDisponible
+|CoteDejaExistante
+|DejaMembre
+|DoitRetournerSesLivres
+
+4. Description des états standards du système
+Nous représentons le stock de livre de la bibliothèque par une fonction partielle finie qui associe une cote à un livre. Nous
+représentons les emprunts effectués par les membres par une fonction partielle finie
+qui associe une cote à un membre. L’ensemble des livres disponibles sera l’ensemble (fini) disponible et l’ensemble des membres sera l’ensemble (fini) membre . 
+Voici la spécification formelle d’un état valide du système.
+
+Bibliotheque
+stock:COTE
+77?
+LIVRE
+emprunt:COTE
+77?
+LECTEUR
+disponible:F COTE
+membre:F LECTEUR
+disponible?
+domemprunt = domstock
+disponible?
+dom emprunt = {}
+ran emprunt ?
+membre
+?
+m
+:
+membre
+•
+#(
+emprunt
+B
+{
+m
+}
+)
+?
+nb
+pret
+max
+
+5. Description d’un état initial
+Nous ne savons pas si l’état initial correspond à
+l’ouverture de la bibliothèque au public (auquel cas elle est pleine de livres) ou si
+l’état initial correspond à l’ouverture des locaux et la mise en place du système (au-
+quel cas elle ne possède pas de livre pour le moment). Nous laissons donc le choix au
+programmeur. Nous obtenons l’état initial suivant.
+BibliothequeInit
+Bibliotheque
+disponible
+= dom
+stock
+emprunt
+=
+{}
+membre
+=
+{}
