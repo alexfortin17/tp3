@@ -254,7 +254,7 @@ post
 //CHSTC5 debut
 schema !retirerStock(p:Produit)
 pre
-	fermeture = false,
+	fermeture = false
 post
 	stock! = (stock.remove(p));
 	(
@@ -270,6 +270,14 @@ pre
 post
 	//TODO : retirer item marcheCible
 	;
+
+schema !sondageSatisfaction(p:Produit, n nat)
+pre 
+	n >= minSatisfaction,
+	n <= maxSatisfaction,
+	p in satisfaction.dom
+post
+	satisfaction[p] = n;
 	
 	
 schema !sondagePopulaires()
