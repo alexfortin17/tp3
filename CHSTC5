@@ -128,9 +128,7 @@ interface
 build{!stock: map of (Produit -> Quantite), !marcheCible :set of (Produit), !seuil:map of (Produit -> Quantite)}
 
 pre
-	//CHSTC5 debut
-	produitsPopulaires = stock.dom,
-	//CHSTC5 fin
+
 	
     stock.dom <<= marcheCible,
     seuil.dom =  stock.dom,
@@ -142,14 +140,16 @@ pre
 post
 	//CHSTC5 debut
   //TODO : valider formulation
-  (
-  [(stock.dom).empty]: fermeture = true,
-  []: fermeture = false
-  ),
-  satisfaction! = map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat) {p, minSatisfaction}};
+  //(
+  //[(stock.dom).empty]: fermeture = true,
+  //[]: fermeture = false
+  //)
+  produitsPopulaires! = stock.dom,
+  produitsNonPopulaires! = stock.dom -- stock.dom,
+  fermeture! = false,
+  satisfaction! = map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat) {p, minSatisfaction}},
   //CHSTC5 fin
 renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}}; 
-
   
 
 
@@ -221,13 +221,17 @@ pre
 
 post 
 	//CHSTC5 debut
-	(
-	[(seuil[p]) = 0 && ((stock[p]) - q) = 0]: retirerStock(p),
-	[]: stock! = (stock.remove(p)).append(p -> (stock[p]-q))
-	);
+	//TODO : revoir syntaxe
+	//(
+	//[(seuil[p]) = 0] : 
+	//	(
+	//	[(stock[p]) - q) = 0]: retirerStock(p),
+	//	);
+	//[]: stock! = (stock.remove(p)).append(p -> (stock[p]-q));
+	//);
 	
 	//CHSTC5 fin
-   //stock! = (stock.remove(p)).append(p -> (stock[p]-q));    //CHSTC mod
+   stock! = (stock.remove(p)).append(p -> (stock[p]-q));    //CHSTC mod
    
 
 
@@ -257,42 +261,42 @@ pre
 	fermeture = false
 post
 	stock! = (stock.remove(p));
-	(
-	[stock.empty]: fermeture = true,
-	[]: fermeture = false
-	)
+	//(
+	//[stock.empty]: fermeture = true,
+	//[]: fermeture = false
+	//)
 	
-schema !retirerProduit(p:Produit)
-pre 
-  p ~in stock.dom,
-  p in marcheCible,
-  #(marcheCible) >= 2
-post
+//schema !retirerProduit(p:Produit)
+//pre 
+//  p ~in stock.dom,
+//  p in marcheCible,
+//  #(marcheCible) >= 2
+//post
 	//TODO : retirer item marcheCible
-	;
 
-schema !sondageSatisfaction(p:Produit, n nat)
+
+schema !sondageSatisfaction(p:Produit, n:nat)
 pre 
 	n >= minSatisfaction,
 	n <= maxSatisfaction,
 	p in satisfaction.dom
 post
-	satisfaction[p] = n;
+	satisfaction! = (satisfaction.remove(p)).append(p -> n);
 	
 	
-schema !sondagePopulaires()
+schema !sondagePopulaires
 pre
-	fermeture = false,
+	fermeture = false
 	
 post
 	produitsNonPopulaires! = (those p::renouvellement.dom :- renouvellement[p] < renouvellementSeuil),
-	produitsPopulaires! = produitsNonPopulaires ** stock.dom,
+	produitsPopulaires! = produitsNonPopulaires ** stock.dom;
 	
-	( 
-	[produitsNonPopulaires ** (those p::satisfaction.dom :- satisfaction[p] < satisfactionSeuil)]:
-			seuil! = (seuil.remove(p)).append(p -> 0)
-	)
-;
+	//( 
+	//[produitsNonPopulaires ** (those p::satisfaction.dom :- satisfaction[p] < satisfactionSeuil)]:
+	//		seuil! = (seuil.remove(p)).append(p -> 0)
+	//)
+
 //CHSTC5 fin   
     
 schema produitsPopulaires(pp!: set of (Produit),q:Quantite)
