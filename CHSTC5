@@ -98,10 +98,10 @@ invariant
   forall p::satisfaction.dom :- satisfaction[p] <= maxSatisfaction,
   forall p::satisfaction.dom :- satisfaction[p] >= minSatisfaction,
   
-  produitsPopulaires.dom <<= stock.dom,
-  produitsNonPopulaires.dom <<= stock.dom,
-  (produitsPopulaires.dom ** produitsNonPopulaires.dom).empty, //Disjoint
-  produitsPopulaires.dom ++ produitsNonPopulaires.dom = stock.dom, //Union représente les stocks
+  produitsPopulaires <<= stock.dom,
+  produitsNonPopulaires <<= stock.dom,
+  (produitsPopulaires ** produitsNonPopulaires).empty, //Disjoint
+  produitsPopulaires ++ produitsNonPopulaires = stock.dom, //Union représente les stocks
   
   //TODO : valider formulation
   (
@@ -129,7 +129,7 @@ build{!stock: map of (Produit -> Quantite), !marcheCible :set of (Produit), !seu
 
 pre
 	//CHSTC5 debut
-	produitsPopulaires.dom = stock.dom,
+	produitsPopulaires = stock.dom,
 	//CHSTC5 fin
 	
     stock.dom <<= marcheCible,
@@ -278,7 +278,7 @@ pre
 	
 post
 	produitsNonPopulaires! = (those p::renouvellement.dom :- renouvellement[p] < renouvellementSeuil),
-	produitsPopulaires! = produitsNonPopulaires.dom ** stock.dom,
+	produitsPopulaires! = produitsNonPopulaires ** stock.dom,
 	
 	( 
 	[produitsNonPopulaires ** (those p::satisfaction.dom :- satisfaction[p] < satisfactionSeuil)]:
