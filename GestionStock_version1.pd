@@ -20,7 +20,7 @@
 class Produit ^= tag;
 class Quantite ^= nat;
 class Niveau ^= those x : nat :- x >= 1 & x <= 10;//ss-
-
+	
 
 
 //-- Constantes ----------------------------------------------------------
@@ -70,25 +70,25 @@ var
     
 invariant
 
-// Les produits en stock doivent faire partie du marche cibe. 
-// Le domaine de seuil est le même que le domaine de stock,
-// à chaque produit en stock on associe un seuil. 
-// Un renouvellement est associé à chacun des produits en stock.
-// La quantité de chacun des produits ne doit pas dépasser la capacité de stockage fixée d'avance
-// Les seuils ne doivent pas être plus élevés que la capacité de stockage (déduction logique!)
-// La quantité en stock de chaque produit doit être supérieur ou égal au seuil minimal associé 
-// au produit et inférieure ou égal à la capacité.
+// Les produits en stock doivent faire partie du marche cibe.	ok
+// Le domaine de seuil est le même que le domaine de stock,	
+// à chaque produit en stock on associe un seuil. 	ok
+// Un renouvellement est associé à chacun des produits en stock.	ok
+// La quantité de chacun des produits ne doit pas dépasser la capacité de stockage fixée d'avance.	ok
+// Les seuils ne doivent pas être plus élevés que la capacité de stockage (déduction logique!)	ok
+// La quantité en stock de chaque produit doit être supérieur ou égal au seuil minimal associé 	
+// au produit et inférieure ou égal à la capacité.	ok
 
 
-     stock.dom <<= marcheCible, 
-     seuil.dom =  stock.dom,
-     renouvellement.dom = stock.dom,
-     forall p::stock.dom :- stock[p] <= capacite,
-     forall p::seuil.dom :-  seuil[p] <= capacite,
-     forall p::stock.dom :- seuil[p]<= stock[p];
-  
-   
-  
+     stock.dom <<= marcheCible, //ok
+     seuil.dom = stock.dom,	//ok
+     renouvellement.dom = stock.dom,	//ok
+     forall p::stock.dom :- stock[p] <= capacite,	//ok
+     forall p::seuil.dom :-  seuil[p] <= capacite,	//ok
+     forall p::stock.dom :- seuil[p]<= stock[p];	//ok
+	 //fermeture != true;
+	 
+	 
 interface
 
 // Puisqu'on passe des paramètres lors de l'initialisation. Il faut s'assurer 
@@ -98,7 +98,7 @@ build{!stock: map of (Produit -> Quantite), !marcheCible :set of (Produit), !seu
 
 pre
     stock.dom <<= marcheCible,
-    seuil.dom =  stock.dom,
+    seuil.dom = stock.dom,
     forall p::stock.dom :- stock[p] <= capacite,
     forall p::seuil.dom :-  seuil[p] <= capacite,
     forall p::stock.dom :-  seuil[p] <= stock[p]
@@ -106,7 +106,11 @@ pre
 
 post
 
-renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}}; 
+renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}}, 
+//produitsPopulaires! = set of (Produit -> Quantite) {for (p::stock.dom ** p::renouvellement.dom ) >= p::stock.ran){p,q}}, 	//ss-
+//produitsNonPopulaires! = set of (Produit),	//ss-
+//satisfaction! = map of (Produit -> Niveau),	//ss-
+fermeture != true;	//ss-
 
   
 
