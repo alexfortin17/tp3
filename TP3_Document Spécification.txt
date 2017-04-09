@@ -1,22 +1,22 @@
-Document de spécification formelle pour Gestion de Stock
+Document de spÃ©cification formelle pour Gestion de Stock
 
-2. Description des types et des différentes constantes.
+2. Description des types et des diffÃ©rentes constantes.
 
-Le nombre de livre maxi-mal qu’un membre peut emprunter est noté
+Le nombre de livre maxi-mal quâ€™un membre peut emprunter est notÃ©
 nbpretmax
 
 . Il y a les types
 Cote, Livre et Lecteur
 
-. Le type Cote représente l’ensemble des cotes possibles (utilisées ou non).
+. Le type Cote reprÃ©sente lâ€™ensemble des cotes possibles (utilisÃ©es ou non).
 
-Le type Livre représente l’ensemble des livres possibles (peu importe que la biblio-thèque les possède ou non). On peut penser que chaque élément de type Livre contient des informations utiles comme l’auteur, le titre, l’année de publication, etc.
+Le type Livre reprÃ©sente lâ€™ensemble des livres possibles (peu importe que la biblio-thÃ¨que les possÃ¨de ou non). On peut penser que chaque Ã©lÃ©ment de type Livre contient des informations utiles comme lâ€™auteur, le titre, lâ€™annÃ©e de publication, etc.
 
-Le type Lecteur représente l’ensemble des lecteurs possibles  (membres ou non). On peut penser que chaque élément de type Lecteur contient des informations utiles comme le nom, l’adresse,  le numéro de téléphone, etc.
+Le type Lecteur reprÃ©sente lâ€™ensemble des lecteurs possibles  (membres ou non). On peut penser que chaque Ã©lÃ©ment de type Lecteur contient des informations utiles comme le nom, lâ€™adresse,  le numÃ©ro de tÃ©lÃ©phone, etc.
 
-On a finalement le type Message qui contient les messages possiblement retournés à l’utilisateur par le système en cas l’erreur. 
+On a finalement le type Message qui contient les messages possiblement retournÃ©s Ã  lâ€™utilisateur par le systÃ¨me en cas lâ€™erreur. 
 
-Voici la spécification de ces types et constantes.
+Voici la spÃ©cification de ces types et constantes.
 [COTE, LIVRE , LECTEUR ]
 nbpret
 max:N
@@ -30,11 +30,13 @@ MESSAGE::=LivreNonDisponible
 |DejaMembre
 |DoitRetournerSesLivres
 
-4. Description des états standards du système
-Nous représentons le stock de livre de la bibliothèque par une fonction partielle finie qui associe une cote à un livre. Nous
-représentons les emprunts effectués par les membres par une fonction partielle finie
-qui associe une cote à un membre. L’ensemble des livres disponibles sera l’ensemble (fini) disponible et l’ensemble des membres sera l’ensemble (fini) membre . 
-Voici la spécification formelle d’un état valide du système.
+
+4. Description des Ã©tats standards du systÃ¨me
+
+Nous reprÃ©sentons le stock de livre de la bibliothÃ¨que par une fonction partielle finie qui associe une cote Ã  un livre. Nous
+reprÃ©sentons les emprunts effectuÃ©s par les membres par une fonction partielle finie
+qui associe une cote Ã  un membre. Lâ€™ensemble des livres disponibles sera lâ€™ensemble (fini) disponible et lâ€™ensemble des membres sera lâ€™ensemble (fini) membre . 
+Voici la spÃ©cification formelle dâ€™un Ã©tat valide du systÃ¨me.
 
 Bibliotheque
 stock:COTE
@@ -55,7 +57,7 @@ membre
 m
 :
 membre
-•
+â€¢
 #(
 emprunt
 B
@@ -68,12 +70,14 @@ nb
 pret
 max
 
-5. Description d’un état initial
-Nous ne savons pas si l’état initial correspond à
-l’ouverture de la bibliothèque au public (auquel cas elle est pleine de livres) ou si
-l’état initial correspond à l’ouverture des locaux et la mise en place du système (au-
-quel cas elle ne possède pas de livre pour le moment). Nous laissons donc le choix au
-programmeur. Nous obtenons l’état initial suivant.
+
+5. Description dâ€™un Ã©tat initial
+
+Nous ne savons pas si lâ€™Ã©tat initial correspond Ã 
+lâ€™ouverture de la bibliothÃ¨que au public (auquel cas elle est pleine de livres) ou si
+lâ€™Ã©tat initial correspond Ã  lâ€™ouverture des locaux et la mise en place du systÃ¨me (au-
+quel cas elle ne possÃ¨de pas de livre pour le moment). Nous laissons donc le choix au
+programmeur. Nous obtenons lâ€™Ã©tat initial suivant.
 BibliothequeInit
 Bibliotheque
 disponible
