@@ -30,8 +30,8 @@ class Niveau ^= those x : nat :- x >= 1 & x <= 10;//ss-
 
 const 
  capacite : nat ^= 1000,	//ss-même pour tous les produits
- satisfactionSeuil : Niveau ^= 5;//ss-valeur inconnue
- //renouvellementSeuil : nat ^= ?;	//ss-
+ satisfactionSeuil : Niveau ^= 5,//ss-valeur inconnue
+ renouvellementSeuil : nat ^= ?;	//ss-
 
 
 
