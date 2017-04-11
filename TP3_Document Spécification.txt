@@ -1,91 +1,33 @@
 Document de spécification formelle pour Gestion de Stock
 
-2. Description des types et des différentes constantes.
+2.	Description des types et des différentes constantes.
 
-Le nombre de livre maxi-mal qu’un membre peut emprunter est noté
-nbpretmax
+Il y a 3 types de bases:
+•	Le type Produit représente le type abstrait des produits vendus par l'entreprise.
+•	Le type Quantite représente la quantité des produits en stock.
+•	Le type Niveau est un entier entre 1 et 10 qui représente le niveau de satisfaction estimé associé à un produit.
 
-. Il y a les types
-Cote, Livre et Lecteur
-
-. Le type Cote représente l’ensemble des cotes possibles (utilisées ou non).
-
-Le type Livre représente l’ensemble des livres possibles (peu importe que la biblio-thèque les possède ou non). On peut penser que chaque élément de type Livre contient des informations utiles comme l’auteur, le titre, l’année de publication, etc.
-
-Le type Lecteur représente l’ensemble des lecteurs possibles  (membres ou non). On peut penser que chaque élément de type Lecteur contient des informations utiles comme le nom, l’adresse,  le numéro de téléphone, etc.
-
-On a finalement le type Message qui contient les messages possiblement retournés à l’utilisateur par le système en cas l’erreur. 
-
-Voici la spécification de ces types et constantes.
-[COTE, LIVRE , LECTEUR ]
-nbpret
-max:N
-nbpretmax>0
-MESSAGE::=LivreNonDisponible
-|NonMembre
-|NbPretMaxAtteint
-|LivrePasEnStock
-|LivreDejaDisponible
-|CoteDejaExistante
-|DejaMembre
-|DoitRetournerSesLivres
+Il y a 3 constantes:
+•	La constante "capacite" représente la capacité maximale de stockage de chacun des produits. Elle est la même pour tous les produits et est représentée par une constante entière positive, soit 1000 dans notre spécification. La quantité de chacun des produits en stock ne peut dépasser cette capacité.
+•	La constante "satisfactionSeuil" est le niveau de satisfaction minimal.
+•	La constante "renouvellementSeuil"	est la quantité de renouvellement de produits. En deçà de cette quantité le renouvellement est considéré faible.
 
 
 4. Description des états standards du système
-
-Nous représentons le stock de livre de la bibliothèque par une fonction partielle finie qui associe une cote à un livre. Nous
-représentons les emprunts effectués par les membres par une fonction partielle finie
-qui associe une cote à un membre. L’ensemble des livres disponibles sera l’ensemble (fini) disponible et l’ensemble des membres sera l’ensemble (fini) membre . 
-Voici la spécification formelle d’un état valide du système.
-
-Bibliotheque
-stock:COTE
-77?
-LIVRE
-emprunt:COTE
-77?
-LECTEUR
-disponible:F COTE
-membre:F LECTEUR
-disponible?
-domemprunt = domstock
-disponible?
-dom emprunt = {}
-ran emprunt ?
-membre
-?
-m
-:
-membre
-•
-#(
-emprunt
-B
-{
-m
-}
-)
-?
-nb
-pret
-max
+Les variables d'état général:
+•	stock est une fonction qui associe la quantité en stock d’un produit à ce produit. Deux produits différents peuvent avoir des quantités en stock différentes. (Produit ->Quantite)
+•	marcheCible est un ensemble de produits représentant la ligne de produits sous la responsabilité du gérant. L’ensemble des produits gardés en stock doivent faire partie des produits désignés par l’ensemble identifié comme marché cible
+•	Les produits en stock sont répartis en deux ensembles disjoints produitsPopulaires et produitsNonPopulaires dont l’union représente l’ensemble des produits en stock. Un produit est considéré en stock tant qu’on n’a pas décidé de le retirer des ventes et ce même si sa quantité est à zéro. Un produit est mis dans l’ensemble produitsPopulaires si son renouvellement excède ou est égal à renouvellementSeuil, sinon il est placé dans produitsNonPopulaires.
+•	seuil est une fonction qui associe à chaque produit en stock un seuil minimal de quantité devant se trouver en stock (Produit -> Quantite). Quand la quantité d’un produit, suite à une vente, baisse en deçà de ce seuil, il faut renouveler le produit, c’est-à-dire en acheter une autre quantité.
+•	renouvellement est une fonction qui associe à chaque produit en stock le cumul des quantités achetées (Produit -> nat), dans le but de mieux cibler le marché.
+•	satisfaction est une fonction qui associe à chaque produit en stock un niveau de satisfaction (Produit -> Niveau). 
+•	fermeture est une variable booléenne si elle est vraie cela veut dire que la ligne de produits va être fermée par le gestionnaire.
 
 
 5. Description d’un état initial
 
-Nous ne savons pas si l’état initial correspond à
-l’ouverture de la bibliothèque au public (auquel cas elle est pleine de livres) ou si
-l’état initial correspond à l’ouverture des locaux et la mise en place du système (au-
-quel cas elle ne possède pas de livre pour le moment). Nous laissons donc le choix au
-programmeur. Nous obtenons l’état initial suivant.
-BibliothequeInit
-Bibliotheque
-disponible
-= dom
-stock
-emprunt
-=
-{}
-membre
-=
-{}
+L’ensemble des produits gardés en stock doivent faire partie des produits désignés par l’ensemble identifié comme marché cible. 
+
+A chacun sera associé un seuil minimal qui sera fourni dès l’initialisation, en paramètre d’entrée. Le renouvellement d’un produit commence à zéro et évolue à chaque fois qu’on achète une quantité d’un produit en rajoutant la quantité achetée. La quantité gardée en stock d’un produit doit être maintenue supérieure ou égale au seuil minimal et inférieure ou égale à la capacité de stockage. Initialement le gérant commence avec un ensemble de produits considéré comme le marché cible initial, un ensemble de produits en stock avec leurs quantités associées, une association produit seuil minimal pour chacun des produits en stock. Ces informations doivent être fournis en paramètres d`es l’initialisation. Évidemment, il faut s'assurer que ces paramètres sont conformes aux invariants.
+
+
