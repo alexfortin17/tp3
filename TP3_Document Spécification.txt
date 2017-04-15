@@ -37,10 +37,10 @@ A chacun des produits sera associé un seuil minimal qui sera fourni dès l’in
 |-- GestionStockInit ----------------------------------------------------------------
 | GestionStock	//état général du système
 |-----------------------------------
-| renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}}, 
-| produitsNonPop! = set of (Produit) {},
-| produitsPop! = stock.dom,
-| fermeture! = false;	
+| renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}} 
+| produitsNonPop! = set of (Produit) {}
+| produitsPop! = stock.dom
+| fermeture! = false	
 |-------------------------------------------------------------------------------------------
 
 
