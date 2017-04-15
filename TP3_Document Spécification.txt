@@ -26,8 +26,22 @@ Les variables d'état général:
 
 5. Description d’un état initial
 
-L’ensemble des produits gardés en stock doivent faire partie des produits désignés par l’ensemble identifié comme marché cible. 
+Initialement le gérant commence avec un ensemble de produits considéré comme le marché cible initial, un ensemble de produits en stock avec leurs quantités associées, une association produit seuil minimal pour chacun des produits en stock. Ces informations doivent être fournies en paramètres dès l’initialisation. Évidemment, il faut s'assurer que ces paramètres sont conformes aux invariants. Le renouvellement est initialisé à zéro.
 
-A chacun sera associé un seuil minimal qui sera fourni dès l’initialisation, en paramètre d’entrée. Le renouvellement d’un produit commence à zéro et évolue à chaque fois qu’on achète une quantité d’un produit en rajoutant la quantité achetée. La quantité gardée en stock d’un produit doit être maintenue supérieure ou égale au seuil minimal et inférieure ou égale à la capacité de stockage. Initialement le gérant commence avec un ensemble de produits considéré comme le marché cible initial, un ensemble de produits en stock avec leurs quantités associées, une association produit seuil minimal pour chacun des produits en stock. Ces informations doivent être fournis en paramètres d`es l’initialisation. Évidemment, il faut s'assurer que ces paramètres sont conformes aux invariants.
+A chacun des produits sera associé un seuil minimal qui sera fourni dès l’initialisation, en paramètre d’entrée. Le renouvellement d’un produit commence à zéro et évolue à chaque fois qu’on achète une quantité d’un produit en rajoutant la quantité achetée. La quantité gardée en stock d’un produit doit être maintenue supérieure ou égale au seuil minimal et inférieure ou égale à la capacité de stockage. 
+
+
+
+
+
+|-- GestionStockInit ----------------------------------------------------------------
+| GestionStock	//état général du système
+|-----------------------------------
+| renouvellement!  =  map of (Produit -> nat) {for p ::stock.dom yield pair of (Produit, nat){p,0}}, 
+| produitsNonPop! = set of (Produit) {},
+| produitsPop! = stock.dom,
+| fermeture! = false;	
+|-------------------------------------------------------------------------------------------
+
 
 
