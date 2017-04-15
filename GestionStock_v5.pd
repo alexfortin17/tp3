@@ -1,41 +1,43 @@
 //*******************************************************
 //* 
 //* file GestionStock.pd
-//* Gestion des stock de produits vendus au détail
-//* auteurs: Jean-François Collin 111084639, Sandra Sirois 990112293,
+//* Gestion des stock de produits vendus au dÃ©tail
+//* auteurs: Jean-FranÃ§ois Collin 111084639, Sandra Sirois 990112293,
 //*          Christiane St-Cyr 111101565, Alexandre Fortin 910024966
 //* 
 //* date remise 19 avril 2017
 //*
 //*******************************************************
 //////////////////////////////////////////////////////////////////////////
-//  à partir d'un gabarit - GLO-3004, spécification formelle et vérification, 
+//  Ã  partir d'un gabarit - GLO-3004, spÃ©cification formelle et vÃ©rification, 
 //////////////////////////////////////////////////////////////////////////
 
 //-- Types de base (abstraits) -------------------------------------------
-// L'énoncé n'indique aucune information concernant les attributs d'un produit
-//il est alors normal de les considérer comme des types abstraits "tag".
-// Les quantités et le niveau de satisfaction sont des entiers naturels. 
+// L'Ã©noncÃ© n'indique aucune information concernant les attributs d'un produit
+//il est alors normal de les considÃ©rer comme des types abstraits "tag".
+// Les quantitÃ©s et le niveau de satisfaction sont des entiers naturels. 
 
 class Produit ^= tag;
 class Quantite ^= nat;
 class Niveau ^= those x : nat :- x >= 1 & x <= 10;
 
+
 //-- Constantes ----------------------------------------------------------
-//  La capacité de stockage est une constante liée aux installations de l'entreprise. 
+//  La capacitÃ© de stockage est une constante liÃ©e aux installations de l'entreprise. 
 //  La satisfactionSeuil est le niveau de satisfaction minimal. 
 //  Le renouvellementSeuil est la quantite de renouvellement de produits. 
 
 const 
  capacite : nat ^= 1000,
- satisfactionSeuil : Niveau ^= 5,
- renouvellementSeuil : nat ^= 500;
+ satisfactionSeuil : Niveau ^= 5,	//valeur que nous avons choisie
+ renouvellementSeuil : nat ^= 500;	//valeur que nous avons choisie
+
 
 //------------------------------------------------------------------------
 // CLASSE Gestiontock
 //------------------------------------------------------------------------
-// L'énoncé indique clairement plusieurs attributs et propriétés relatifs
-// à la gestion de  stock, il est donc normal d'y associer une classe.	
+// L'Ã©noncÃ© indique clairement plusieurs attributs et propriÃ©tÃ©s relatifs
+// Ã  la gestion de  stock, il est donc normal d'y associer une classe.	
 //--------------------------------------------------------------------------
 
 class GestionStock ^= 
@@ -48,9 +50,12 @@ var
 // Le marcheCible est un ensemble de produits.
 // Les seuils sont fournis comme une association (produit,seuil).
 // Le renouvellement est une association (produit, quantite achetee).
-// L'union des produitsPopulaires et des produitsNonPopulaires représente l'ensemble des produits en stock. 
+// L'union des produitsPopulaires et des produitsNonPopulaires reprÃ©sente l'ensemble des produits en stock. 
 // Les produitsPopulaires sont les produits dont le renouvellement >= au seuil de renouvellement.
 // Les produitsNonPopulaires sont les produits dont le renouvellement < au seuil de renouvellement.
+// La satisfaction est une association (Produit, Niveau). 
+// La fermeture est une variable boolÃ©enne si elle est vraie
+// cela veut dire que la ligne de produits va Ãªtre fermÃ©e par le gestionnaire.
 
   stock          : map of (Produit  -> Quantite),
   marcheCible    : set of (Produit),
@@ -64,13 +69,13 @@ var
 invariant
 
 // Les produits en stock doivent faire partie du marche cibe.
-// Le domaine de seuil est le même que le domaine de stock,	
-// à chaque produit en stock on associe un seuil.
-// Un renouvellement est associé à chacun des produits en stock.
-// La quantité de chacun des produits ne doit pas dépasser la capacité de stockage fixée d'avance.
-// Les seuils ne doivent pas être plus élevés que la capacité de stockage (déduction logique!)
-// La quantité en stock de chaque produit doit être supérieur ou égal au seuil minimal associé 	
-// au produit et inférieure ou égal à la capacité.
+// Le domaine de seuil est le mÃªme que le domaine de stock,	
+// Ã  chaque produit en stock on associe un seuil.
+// Un renouvellement est associÃ© Ã  chacun des produits en stock.
+// La quantitÃ© de chacun des produits ne doit pas dÃ©passer la capacitÃ© de stockage fixÃ©e d'avance.
+// Les seuils ne doivent pas Ãªtre plus Ã©levÃ©s que la capacitÃ© de stockage (dÃ©duction logique!)
+// La quantitÃ© en stock de chaque produit doit Ãªtre supÃ©rieur ou Ã©gal au seuil minimal associÃ© 	
+// au produit et infÃ©rieure ou Ã©gal Ã  la capacitÃ©.
 
      stock.dom <<= marcheCible, //produit en stock inclue dans marchecible
      seuil.dom = stock.dom,	
@@ -89,7 +94,7 @@ invariant
 	 
 interface
 
-// Puisqu'on passe des paramètres lors de l'initialisation. Il faut s'assurer 
+// Puisqu'on passe des paramÃ¨tres lors de l'initialisation. Il faut s'assurer 
 // qu'ils sont conformes aux invariants. 
 
 build{!stock: map of (Produit -> Quantite), !marcheCible :set of (Produit), !seuil:map of (Produit -> Quantite), !satisfaction:map of (Produit -> Niveau) }
@@ -110,12 +115,13 @@ post
 	produitsPop! = stock.dom,
 	fermeture! = false;	
 
+
 schema !achatProduitExistant(p:Produit,q:Quantite)
 
-// Pour pouvoir acheter une quantité q d'un produit existant, 
+// Pour pouvoir acheter une quantitÃ© q d'un produit existant, 
 // Il faut s'assurer que le produit est en stock
-// il faut s'assurer que  le total de la quantité existante plus celle qu'on achète reste 
-// inférieure ou égale à la capacité
+// il faut s'assurer que  le total de la quantitÃ© existante plus celle qu'on achÃ¨te reste 
+// infÃ©rieure ou Ã©gale Ã  la capacitÃ©
 
 pre 
   p in stock.dom,
@@ -127,14 +133,15 @@ post
    stock! = (stock.remove(p)).append(p -> stock[p]+q),
    renouvellement! = (renouvellement.remove(p)).append(p -> renouvellement[p]+q);
    
+   
 schema !achatNouveauProduit(p:Produit,q:Quantite,s:Quantite,n:Niveau)
 
-// Il faut s'assurer que le produit fait partie du marché cible   
-// Pour pouvoir acheter une quantité q d'un produit p non existant en stock, 
+// Il faut s'assurer que le produit fait partie du marchÃ© cible   
+// Pour pouvoir acheter une quantitÃ© q d'un produit p non existant en stock, 
 // Il faut fournir le seuil  minimal  et il faut s'assurer 
-// qu'il est inférieur ou égal à la capacité                                                               
-// il faut s'assurer que la quantité  qu'on achète est    
-// inférieure ou égale à la capacité et supérieure ou égal au seuil 
+// qu'il est infÃ©rieur ou Ã©gal Ã  la capacitÃ©                                                               
+// il faut s'assurer que la quantitÃ©  qu'on achÃ¨te est    
+// infÃ©rieure ou Ã©gale Ã  la capacitÃ© et supÃ©rieure ou Ã©gal au seuil 
                                                                                           
 pre 
                                                                                             
@@ -153,12 +160,13 @@ post
    renouvellement! = renouvellement.append(p -> 0),
    produitsPop! = produitsPop.append(p);
    
+   
 schema !venteProduit(p:Produit,q:Quantite)
 
 // Il faut s'assurer que le produit fait partie du stock  
-// Pour pouvoir vendre une quantité q d'un produit p existant en stock, 
-// Il faut que q soit inférieure ou égale à la capacité 
-// Il faut s'assurer que la quantité qui resterait aprés la vente soit supérieure ou égal au seuil                                                         
+// Pour pouvoir vendre une quantitÃ© q d'un produit p existant en stock, 
+// Il faut que q soit infÃ©rieure ou Ã©gale Ã  la capacitÃ© 
+// Il faut s'assurer que la quantitÃ© qui resterait aprÃ©s la vente soit supÃ©rieure ou Ã©gal au seuil                                                         
 
 pre 
   p in stock.dom,
@@ -169,6 +177,7 @@ pre
 
 post 
 	stock! = (stock.remove(p)).append(p -> (stock[p]-q));
+   
    
 //vente qui ecoule un produit mais pas le dernier produit en stock
 schema !venteFinalProduit(p:Produit,q:Quantite)
@@ -187,6 +196,7 @@ post
 	renouvellement! = renouvellement.remove(p),
 	seuil! = seuil.remove(p),
 	produitsNonPop! = produitsNonPop.remove(p);	
+
 
 //vente qui ecoule le dernier produit en stock(fermeture)
 schema !venteFinalDernierProduit(p:Produit,q:Quantite)
@@ -207,13 +217,14 @@ post
 	produitsNonPop! = produitsNonPop.remove(p),
 	fermeture! = true;
 
-//nécessairement pas une vente qui ecoule un produit
+
+//nÃ©cessairement pas une vente qui ecoule un produit
 schema !venteProduitAchat(p:Produit,q:Quantite)
 
 // Il faut s'assurer que le produit fait partie du stock  
-// Pour pouvoir vendre une quantité q  qui fait baisser le stock en deçà du seuil
-// Il faut s'assurer que la quantité q vendue soit inférieure ou éagle à capacité mois le seuil minimale
-// Il faut commencer par acheter le maximum possible (capacité - stock[p]) puis vendre q. 
+// Pour pouvoir vendre une quantitÃ© q  qui fait baisser le stock en deÃ§Ã  du seuil
+// Il faut s'assurer que la quantitÃ© q vendue soit infÃ©rieure ou Ã©gale Ã  capacitÃ© mois le seuil minimale
+// Il faut commencer par acheter le maximum possible (capacitÃ© - stock[p]) puis vendre q. 
     
 pre 
   p in stock.dom,
@@ -225,9 +236,9 @@ pre
 post 
     !achatProduitExistant(p,(capacite-stock[p])) then !venteProduit(p,q);
     
+	
 schema !produitsPopulaires(q:Quantite)
-
-// Il faut récupérer les produits dont le renouvellement est supérieur ou égal à q
+// Il faut rÃ©cupÃ©rer les produits dont le renouvellement est supÃ©rieur ou Ã©gal Ã  q
 
 pre
 	fermeture = false
@@ -235,6 +246,7 @@ pre
 post 
 	produitsPop! = (those p::renouvellement.dom :- renouvellement[p] >= q),
 	produitsNonPop! = stock.dom -- (those p::renouvellement.dom :- q <= renouvellement[p]);
+	 
 	 
 schema !miseAJourSeuil(s:map of (Produit -> Quantite))
 
@@ -251,6 +263,7 @@ post
 							seuil[p]! = s[p]
 						);
 
+
 schema !miseAJourSatisfaction(satisfac:map of (Produit -> Niveau))
     
 pre 
@@ -260,6 +273,7 @@ pre
  
 post 
 	forall s::satisfac.dom :- satisfaction[s]! = satisfac[s];	
+	
 	 
 schema !retraitProduitCible(p:Produit) 
     
